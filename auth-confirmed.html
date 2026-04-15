@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <title>Email подтверждён — Diktum</title>
+  <style>
+    :root {
+      --bg-light: #F8FAFC;
+      --bg-cool: #EEF2F9;
+      --bg-dark: #0F172A;
+      --bg-deep-dark: #0A0F1E;
+      --surface-light: #FFFFFF;
+      --surface-dark: #1E293B;
+      --text-light: #1E293B;
+      --text-dark: #F1F5F9;
+      --text-muted-light: #64748B;
+      --text-muted-dark: #94A3B8;
+      --accent: #0EA5E9;
+      --accent-glow: #38BDF8;
+      --border-light: #E2E8F0;
+      --border-dark: #334155;
+      --success: #22C55E;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background: linear-gradient(180deg, var(--bg-cool) 0%, var(--bg-light) 100%);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(180deg, var(--bg-deep-dark) 0%, var(--bg-dark) 100%);
+        color: var(--text-dark);
+      }
+      .card { background: var(--surface-dark); border-color: var(--border-dark); }
+      .muted { color: var(--text-muted-dark); }
+      .hint { background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.25); }
+    }
+    .wrap {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .halo {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .halo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(14,165,233,0.18) 0%, transparent 60%);
+    }
+    @media (prefers-color-scheme: dark) {
+      .halo::before { background: radial-gradient(circle at center, rgba(56,189,248,0.28) 0%, transparent 60%); }
+    }
+    .check {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%);
+      box-shadow: 0 8px 24px rgba(56,189,248,0.28), 0 16px 40px rgba(14,165,233,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .check svg {
+      width: 52px;
+      height: 52px;
+      stroke: #fff;
+      stroke-width: 3.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin: 16px 0 12px;
+    }
+    p {
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0 0 12px;
+    }
+    .muted { color: var(--text-muted-light); }
+    .hint {
+      margin-top: 24px;
+      padding: 14px 16px;
+      background: rgba(14,165,233,0.06);
+      border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    footer {
+      margin-top: 32px;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="halo">
+      <div class="check" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><polyline points="4.5 12.5 10 18 20 7"/></svg>
+      </div>
+    </div>
+    <h1>Email подтверждён</h1>
+    <p>Вернитесь в приложение <strong>Diktum</strong> и войдите в свой аккаунт — всё готово к тренировкам.</p>
+    <p class="muted">Эту вкладку можно закрыть.</p>
+    <div class="hint">
+      Если приложение ещё не установлено — скачайте его и используйте тот же email при входе.
+    </div>
+    <footer>© 2026 Diktum</footer>
+  </main>
+</body>
+</html>
