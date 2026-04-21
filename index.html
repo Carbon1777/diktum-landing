@@ -135,12 +135,14 @@
     }
     .btn-login-hint {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 8px);
       right: 0;
+      max-width: 160px;
       font-size: 11px;
       font-weight: 400;
+      line-height: 1.35;
       color: var(--text-muted);
-      white-space: nowrap;
+      text-align: right;
       pointer-events: none;
       letter-spacing: 0.01em;
     }
@@ -306,6 +308,7 @@
     .hero-phone {
       flex-shrink: 0;
       position: relative;
+      margin-top: 56px;
     }
     .phone-frame {
       width: 280px;
@@ -341,7 +344,7 @@
       .hero .container { flex-direction: column; text-align: center; }
       .hero-subtitle { margin-left: auto; margin-right: auto; }
       .hero-actions { justify-content: center; }
-      .hero-phone { order: -1; }
+      .hero-phone { order: -1; margin-top: 0; }
       .phone-frame { width: 220px; }
     }
 
