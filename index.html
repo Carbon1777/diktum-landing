@@ -115,6 +115,7 @@
     }
     .header-nav a:hover { color: var(--text); }
     .btn-login {
+      position: relative;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -131,6 +132,17 @@
     .btn-login:hover {
       border-color: var(--accent);
       background: rgba(14, 165, 233, 0.08);
+    }
+    .btn-login-hint {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-muted);
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: 0.01em;
     }
 
     /* Mobile nav */
@@ -695,6 +707,7 @@
         <a href="https://app.diktumweb.ru" class="btn-login">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Войти
+          <span class="btn-login-hint">Зарегистрируйтесь или войдите в аккаунт</span>
         </a>
       </nav>
       <button class="burger" id="burger" aria-label="Меню">
