@@ -415,15 +415,28 @@
     /* ── Video ── */
     .video-section .container {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 64px;
+      gap: 40px;
     }
-    .video-content { flex: 1; }
-    .video-phone { flex-shrink: 0; }
-    .video-phone .phone-frame {
-      width: 300px;
-      cursor: pointer;
+    .video-content { text-align: center; }
+    .video-content .section-desc { margin-left: auto; margin-right: auto; }
+    .video-player {
+      width: 100%;
+      max-width: 720px;
       position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4), 0 0 60px rgba(56, 189, 248, 0.06);
+      cursor: pointer;
+    }
+    .video-player video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #000;
     }
     .video-play-overlay {
       position: absolute;
@@ -431,55 +444,55 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0,0,0,0.3);
-      border-radius: 36px;
+      background: rgba(0,0,0,0.35);
+      border-radius: var(--radius-xl);
       opacity: 1;
       transition: opacity 0.3s;
       z-index: 3;
     }
     .video-play-overlay.hidden { opacity: 0; pointer-events: none; }
     .play-btn {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
       background: rgba(14, 165, 233, 0.9);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 32px rgba(14, 165, 233, 0.4);
+      transition: transform 0.2s;
     }
-    .play-btn svg { width: 28px; height: 28px; fill: #fff; margin-left: 3px; }
+    .video-player:hover .play-btn { transform: scale(1.08); }
+    .play-btn svg { width: 30px; height: 30px; fill: #fff; margin-left: 3px; }
     .video-features {
       list-style: none;
-      margin-top: 28px;
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
     }
     .video-features li {
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 15px;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
       color: var(--text-muted);
     }
     .video-features li .vf-icon {
       flex-shrink: 0;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
       background: rgba(34, 197, 94, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 12px;
       color: var(--success);
       font-weight: 700;
     }
-    @media (max-width: 900px) {
-      .video-section .container { flex-direction: column-reverse; text-align: center; }
-      .video-phone .phone-frame { width: 240px; margin: 0 auto; }
-      .video-features { align-items: center; }
+    @media (max-width: 600px) {
+      .video-features { flex-direction: column; align-items: center; }
     }
 
     /* ── How it works ── */
@@ -855,40 +868,25 @@
   <!-- ── Video ── -->
   <section class="section video-section" id="video">
     <div class="container">
-      <div class="video-phone">
-        <div class="phone-frame" id="videoFrame">
-          <div class="phone-notch"></div>
-          <video id="promoVideo" src="https://zdljzitztcjvfhiyiwag.supabase.co/storage/v1/object/public/landing/video/promo.mp4" preload="metadata" playsinline muted loop poster="assets/screenshots/1.png"></video>
-          <div class="video-play-overlay" id="videoOverlay">
-            <div class="play-btn">
-              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="video-content">
         <div class="section-label fade-in">Промо</div>
         <h2 class="section-title fade-in">Увидеть — значит попробовать</h2>
-        <p class="section-desc fade-in">30 секунд, которые покажут как Diktum меняет подход к речевым тренировкам.</p>
-        <ul class="video-features fade-in">
-          <li>
-            <span class="vf-icon">&check;</span>
-            Мгновенная оценка каждой записи
-          </li>
-          <li>
-            <span class="vf-icon">&check;</span>
-            Персональные рекомендации от ИИ
-          </li>
-          <li>
-            <span class="vf-icon">&check;</span>
-            Реалистичные собеседования
-          </li>
-          <li>
-            <span class="vf-icon">&check;</span>
-            Геймификация: ранги, ачивки, стрики
-          </li>
-        </ul>
+        <p class="section-desc fade-in">Короткий ролик, который покажет как Diktum меняет подход к речевым тренировкам.</p>
       </div>
+      <div class="video-player fade-in" id="videoFrame">
+        <video id="promoVideo" src="https://zdljzitztcjvfhiyiwag.supabase.co/storage/v1/object/public/landing/video/promo.mp4" preload="metadata" playsinline muted loop poster="assets/screenshots/1.png"></video>
+        <div class="video-play-overlay" id="videoOverlay">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+      </div>
+      <ul class="video-features fade-in">
+        <li><span class="vf-icon">&check;</span> Мгновенная оценка</li>
+        <li><span class="vf-icon">&check;</span> Рекомендации от ИИ</li>
+        <li><span class="vf-icon">&check;</span> Собеседования</li>
+        <li><span class="vf-icon">&check;</span> Ранги и ачивки</li>
+      </ul>
     </div>
   </section>
 
