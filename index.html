@@ -676,9 +676,49 @@
       color: var(--text-muted);
       opacity: 0.6;
     }
+    .hero-studio {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.75;
+      transition: opacity 0.2s ease, color 0.2s ease;
+      width: fit-content;
+    }
+    .hero-studio:hover { opacity: 1; color: var(--text); }
+    .hero-studio-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .footer-studio {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.8;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+    .footer-studio:hover { opacity: 1; color: var(--text); }
+    .footer-studio-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .footer-studio strong { color: var(--text); font-weight: 600; }
     @media (max-width: 768px) {
       .footer .container { justify-content: center; text-align: center; }
       .footer-links { justify-content: center; }
+      .hero-studio { margin-left: auto; margin-right: auto; }
     }
 
     /* ── Animations ── */
@@ -767,6 +807,10 @@
             Смотреть видео
           </a>
         </div>
+        <a href="https://fortonlab.ru" target="_blank" rel="noopener noreferrer" class="hero-studio">
+          <img src="assets/forton-lab-logo.png" alt="" class="hero-studio-logo" width="20" height="20" />
+          <span>Сделано в студии Forton Lab</span>
+        </a>
       </div>
       <div class="hero-phone">
         <div class="phone-frame">
@@ -989,6 +1033,10 @@
         <a href="mailto:privacy@diktumweb.ru">privacy@diktumweb.ru</a>
       </div>
       <div class="footer-copy">&copy; 2026 Diktum. Все права защищены.</div>
+      <a href="https://fortonlab.ru" target="_blank" rel="noopener noreferrer" class="footer-studio">
+        <img src="assets/forton-lab-logo.png" alt="Forton Lab" class="footer-studio-logo" />
+        <span>Сделано в&nbsp;<strong>Forton Lab</strong></span>
+      </a>
     </div>
   </footer>
 
