@@ -20,31 +20,25 @@
 
 ### `assetlinks.json`
 
-В файл уже подставлены **два** SHA256 fingerprint'а в массиве —
+Готов. В файл подставлены **два** SHA256 fingerprint'а в массиве —
 assetlinks протокол поддерживает несколько ключей для одного
-package_name:
+package_name, что покрывает все каналы распространения Diktum:
 
-1. **Локальный release keystore** —
+1. **Google Play App Signing key** —
+   `58:62:89:74:46:34:97:BE:59:3E:02:77:A5:1E:3D:65:AD:68:E8:ED:57:32:0E:9A:FF:53:CE:5B:AD:30:2B:E0`
+   Взят из Play Console → App integrity → Сертификат для ключа
+   подписи приложения → SHA-256. Именно этим ключом Google
+   переподписывает финальный APK перед раздачей пользователям через
+   Google Play.
+
+2. **Локальный release keystore** —
    `70:10:2A:F7:18:03:6D:20:C3:19:0F:85:44:90:04:93:3D:E0:45:23:C8:60:63:2D:7C:0E:38:14:D3:A5:09:38`
-   Извлечён из `Diktum/android/diktum-release.jks` (алиас `diktum`).
-   Подходит для:
-   - APK, распространяемых напрямую (RuStore, прямой sideload, ADB);
-   - Google Play если App Signing by Google Play **отключён** в Console.
-
-2. **Play App Signing key** — пока placeholder
-   `REPLACE_WITH_PLAY_APP_SIGNING_SHA256_IF_PLAY_APP_SIGNING_ENABLED`.
-   Нужен ТОЛЬКО если в Google Play включён App Signing by Google Play
-   (по умолчанию для новых приложений). Если включён:
-   1. Play Console → выбрать Diktum → Setup → App integrity → App
-      Signing Key → SHA-256 certificate fingerprint.
-   2. Скопировать строку и подставить в `assetlinks.json`.
-   3. Если App Signing **отключён** — удалить эту строку из массива
-      (оставить только локальный fingerprint), JSON станет
-      `"sha256_cert_fingerprints": ["70:10:..."]`.
-
-Проверить какой режим включён: Play Console → App integrity → App
-Signing Key — если там есть «Google managed key», значит App Signing
-включён.
+   Извлечён из `Diktum/android/diktum-release.jks` (алиас `diktum`)
+   через `keytool`. Также соответствует Upload key SHA-256 в Play
+   Console. Покрывает:
+   - распространение APK через RuStore (RuStore не переподписывает);
+   - прямой sideload (ADB, веб-загрузка APK);
+   - случаи когда App Signing будет отключён.
 
 ## Проверка после публикации
 
