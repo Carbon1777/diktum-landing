@@ -14,6 +14,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Реферальная программа: захват ?ref= в localStorage до первого рендера.
+       Алфавит соответствует supabase/functions/_shared/referral.ts (без 0/O/1/I/L). -->
+  <script>
+    (function() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var ref = params.get('ref');
+        if (ref && /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/.test(ref)) {
+          localStorage.setItem('diktum_ref', ref);
+        }
+      } catch (_) { /* localStorage недоступен — игнор */ }
+    })();
+  </script>
   <style>
     /* ── Variables ── */
     :root {
@@ -761,7 +774,7 @@
         <a href="#how">Как это работает</a>
         <a href="#video">Видео</a>
         <a href="#download">Скачать</a>
-        <a href="https://app.diktumweb.ru" class="btn-login">
+        <a href="https://app.diktumweb.ru" class="btn-login js-app-link">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Войти
           <span class="btn-login-hint">Веб-версия приложения</span>
@@ -779,7 +792,7 @@
     <a href="#how" onclick="closeMobile()">Как это работает</a>
     <a href="#video" onclick="closeMobile()">Видео</a>
     <a href="#download" onclick="closeMobile()">Скачать</a>
-    <a href="https://app.diktumweb.ru" class="btn-primary" style="margin-top: 12px;">Войти в аккаунт</a>
+    <a href="https://app.diktumweb.ru" class="btn-primary js-app-link" style="margin-top: 12px;">Войти в аккаунт</a>
   </nav>
 
   <!-- ── Hero ── -->
@@ -1090,6 +1103,20 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Реферальная программа: проброс сохранённого ?ref= в ссылки на app.diktumweb.ru.
+    (function() {
+      var ref = null;
+      try { ref = localStorage.getItem('diktum_ref'); } catch (_) {}
+      if (!ref) return;
+      document.querySelectorAll('a.js-app-link').forEach(function(a) {
+        try {
+          var url = new URL(a.href);
+          url.searchParams.set('ref', ref);
+          a.href = url.toString();
+        } catch (_) { /* malformed href — игнор */ }
+      });
+    })();
   </script>
 </body>
 </html>

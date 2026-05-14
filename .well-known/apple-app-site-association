@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "REPLACE_WITH_TEAMID.ru.diktumweb.diktum",
+        "paths": ["/", "/?ref=*", "/index.html*"]
+      }
+    ]
+  }
+}
