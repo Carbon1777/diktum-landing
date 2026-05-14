@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "ru.diktumweb.diktum",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_PLAY_APP_SIGNING_SHA256"
+        "70:10:2A:F7:18:03:6D:20:C3:19:0F:85:44:90:04:93:3D:E0:45:23:C8:60:63:2D:7C:0E:38:14:D3:A5:09:38",
+        "REPLACE_WITH_PLAY_APP_SIGNING_SHA256_IF_PLAY_APP_SIGNING_ENABLED"
       ]
     }
   }
