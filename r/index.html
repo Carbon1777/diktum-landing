@@ -15,6 +15,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script>
+    // Ранний захват ref в localStorage — для Flutter Web версии,
+    // которая может прочитать его при первом запуске app.diktumweb.ru.
     (function() {
       try {
         var params = new URLSearchParams(window.location.search);
@@ -129,6 +131,14 @@
       letter-spacing: 1px;
     }
     .ref-badge.visible { display: inline-block; }
+    .copied {
+      display: none;
+      font-size: 12px;
+      color: #4ade80;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+    .copied.visible { display: block; }
   </style>
 </head>
 <body>
@@ -164,6 +174,10 @@
       </a>
     </div>
 
+    <div id="copied" class="copied">
+      Ссылка скопирована — после установки открой Diktum,<br>приглашение подхватится автоматически
+    </div>
+
     <div class="footer">
       <a href="/">diktumweb.ru</a> • ИИ-тренажёр речи
     </div>
@@ -173,7 +187,12 @@
     (function() {
       var params = new URLSearchParams(window.location.search);
       var ref = (params.get('ref') || '').toUpperCase();
-      if (!/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/.test(ref)) ref = '';
+      var refValid = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/.test(ref);
+      if (!refValid) ref = '';
+
+      // Полный URL с ref — то что копируется в clipboard. Приложение при
+      // первом запуске прочитает буфер, распарсит как URI, извлечёт ?ref=.
+      var fullUrl = window.location.href;
 
       var ua = navigator.userAgent || '';
       var isIOS = /iPhone|iPad|iPod/i.test(ua) && !window.MSStream;
@@ -186,6 +205,7 @@
       var ruStore = document.getElementById('rustore');
       var appStore = document.getElementById('app-store');
       var refBadge = document.getElementById('ref-badge');
+      var copiedNotice = document.getElementById('copied');
 
       // Показать реф-код в карточке
       if (ref) {
@@ -193,13 +213,11 @@
         refBadge.classList.add('visible');
       }
 
-      // Конечная ссылка на app:
-      // - Android: https://diktumweb.ru/?ref= — autoVerified App Link
-      //   через .well-known/assetlinks.json, открывает app мгновенно.
-      // - iOS: diktum://?ref= — Custom URL Scheme (Info.plist URL Types).
-      //   Universal Links не используем — Apple Provisioning Profile
-      //   без Associated Domains capability, обходим через scheme.
-      // - Web: https-ссылка как было, открывает Flutter Web версию.
+      // Целевая ссылка для «Открыть в приложении»:
+      // - iOS: diktum:// — Custom URL Scheme (CFBundleURLTypes в Info.plist).
+      // - Android: https://diktumweb.ru/ — App Link autoVerified через
+      //   assetlinks.json, открывает app мгновенно если установлено.
+      // - Desktop/Web: Flutter Web версия.
       var appUrl;
       if (isIOS) {
         appUrl = 'diktum://?ref=' + encodeURIComponent(ref);
@@ -212,6 +230,8 @@
 
       // Прокидываем ref в Google Play install referrer — Play Store
       // сохраняет и передаёт приложению через Install Referrer API.
+      // Это второй независимый канал deferred deep link на Android
+      // (помимо clipboard). На iOS такого механизма у Apple нет.
       if (ref) {
         playStore.href = 'https://play.google.com/store/apps/details?id=ru.diktumweb.diktum&referrer=' + encodeURIComponent('ref=' + ref);
       }
@@ -225,32 +245,95 @@
       }
       // На desktop показываем все
 
-      // На mobile сразу пробуем deep-link через 600ms после загрузки,
-      // если установлено — откроется app, документ уйдёт в hidden.
-      // Если не открылось через 1500ms — показываем стор-кнопки.
+      // ─── Clipboard для deferred deep link ────────────────────────────
+      // Главный механизм: лендинг копирует fullUrl в буфер обмена → юзер
+      // уходит в магазин → ставит приложение → запускает → приложение
+      // читает буфер при первом старте → находит ?ref= → атрибутирует.
+      //
+      // Работает одинаково на iOS и Android (одной кодовой базой).
+      // Apple показывает баннер «Diktum вставил из Safari» — это валидный
+      // паттерн deferred deep link, нативный для платформы.
+      //
+      // КРИТИЧНО: clipboard.writeText() без user gesture блокируется
+      // современными браузерами (Android Chrome, iOS Safari). Поэтому
+      // основное копирование — в обработчиках click. Безусловная попытка
+      // при загрузке — best-effort, часто блокируется (это норма).
+
+      function copyInviteToClipboard() {
+        if (!ref) return Promise.resolve(false);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(fullUrl).then(
+            function() { return true; },
+            function() { return legacyCopy(fullUrl); }
+          );
+        }
+        return Promise.resolve(legacyCopy(fullUrl));
+      }
+
+      function legacyCopy(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '0';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ta.setSelectionRange(0, text.length);
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return !!ok;
+        } catch (err) {
+          return false;
+        }
+      }
+
+      function markCopied() {
+        copiedNotice.classList.add('visible');
+      }
+
       function showStores() {
         stores.classList.add('visible');
       }
 
-      // На клике «Открыть в приложении» — попробовать deep-link
-      // и показать стор-кнопки через 1.5 сек, если document остался visible.
+      // Безусловная попытка copy при загрузке. Если браузер разрешит
+      // (некоторые desktop-браузеры) — приятный бонус. На mobile почти
+      // всегда блокируется — это OK, copy сработает на следующий tap.
+      copyInviteToClipboard().then(function(ok) { if (ok) markCopied(); });
+
+      // На клик ЛЮБОЙ кнопки стора — user gesture, copy разрешён.
+      // href остаётся настоящим: после copy браузер уходит в стор.
+      ['play-store', 'rustore', 'app-store'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('click', function() {
+          copyInviteToClipboard().then(function(ok) { if (ok) markCopied(); });
+        });
+      });
+
+      // Клик на «Открыть в приложении»:
+      // - На mobile: copy + попытка открыть deep link через 600ms задержку
+      //   (чтобы copy успел отработать, особенно legacy через textarea);
+      //   если через 1800ms документ всё ещё visible — приложение не
+      //   открылось, показываем стор-кнопки.
+      // - На desktop: просто переход на app.diktumweb.ru.
       openAppBtn.addEventListener('click', function(e) {
-        if (!isMobile) return; // на desktop сразу переход на app.diktumweb.ru
+        if (!isMobile) return; // desktop — нативный переход по href
         e.preventDefault();
+        copyInviteToClipboard().then(function(ok) { if (ok) markCopied(); });
         var clickedAt = Date.now();
-        // Уходим по ссылке
         window.location.href = appUrl;
-        // Если через 1500ms документ всё ещё видим — app не открылся → сторы
         setTimeout(function() {
           if (document.visibilityState === 'visible' && Date.now() - clickedAt < 2500) {
             showStores();
           }
-        }, 1500);
+        }, 1800);
       });
 
-      // Если сразу зашли — на mobile через 2.5 сек подсказать сторы
-      // (на случай если deep-link autoVerify работает — он откроет app
-      // мгновенно при первом заходе, тогда мы не успеем показать).
+      // На mobile через 2.5 сек подсказать сторы — если deep link сразу
+      // не открыл app (например, на iOS Custom Scheme требует тап).
       if (isMobile) {
         setTimeout(function() {
           if (document.visibilityState === 'visible') {
@@ -258,12 +341,9 @@
           }
         }, 2500);
       } else {
-        // Desktop — сразу показываем варианты
+        // Desktop — сразу варианты
         showStores();
       }
-
-      // Если пользователь вернулся на лендинг после ухода в стор/app —
-      // не показываем сторы повторно если уже видны.
     })();
   </script>
 </body>
