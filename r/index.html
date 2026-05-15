@@ -193,8 +193,21 @@
         refBadge.classList.add('visible');
       }
 
-      // Конечная ссылка на app: deep-link на основной домен с ?ref=
-      var appUrl = 'https://diktumweb.ru/?ref=' + encodeURIComponent(ref);
+      // Конечная ссылка на app:
+      // - Android: https://diktumweb.ru/?ref= — autoVerified App Link
+      //   через .well-known/assetlinks.json, открывает app мгновенно.
+      // - iOS: diktum://?ref= — Custom URL Scheme (Info.plist URL Types).
+      //   Universal Links не используем — Apple Provisioning Profile
+      //   без Associated Domains capability, обходим через scheme.
+      // - Web: https-ссылка как было, открывает Flutter Web версию.
+      var appUrl;
+      if (isIOS) {
+        appUrl = 'diktum://?ref=' + encodeURIComponent(ref);
+      } else if (isAndroid) {
+        appUrl = 'https://diktumweb.ru/?ref=' + encodeURIComponent(ref);
+      } else {
+        appUrl = 'https://app.diktumweb.ru/?ref=' + encodeURIComponent(ref);
+      }
       openAppBtn.href = appUrl;
 
       // Прокидываем ref в Google Play install referrer — Play Store
