@@ -127,6 +127,29 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/109268618" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
+    <!-- Yandex.Metrika goals -->
+    <script>
+    (function() {
+      var rules = [
+      ["apps.apple.com", "click_appstore"],
+      ["rustore.ru", "click_rustore"],
+      ["play.google.com", "click_googleplay"]
+      ];
+      document.addEventListener('click', function(e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || !window.ym) return;
+        var href = a.getAttribute('href') || '';
+        for (var i = 0; i < rules.length; i++) {
+          if (href.indexOf(rules[i][0]) !== -1) {
+            ym(109268618, 'reachGoal', rules[i][1]);
+            break;
+          }
+        }
+      }, true);
+    })();
+    </script>
+    <!-- /Yandex.Metrika goals -->
+
 </head>
 <body>
   <div class="top-bar">
