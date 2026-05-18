@@ -801,6 +801,43 @@
     </script>
     <!-- /Yandex.Metrika goals -->
 
+    <!-- VK Pixel (Top.Mail.Ru) counter -->
+    <script type="text/javascript">
+    var _tmr = window._tmr || (window._tmr = []);
+    _tmr.push({id: "3767087", type: "pageView", start: (new Date()).getTime()});
+    (function (d, w, id) {
+      if (d.getElementById(id)) return;
+      var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+      ts.src = "https://top-fwz1.mail.ru/js/code.js";
+      var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
+      if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+    })(document, window, "tmr-code");
+    </script>
+    <noscript><div><img src="https://top-fwz1.mail.ru/counter?id=3767087;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru" /></div></noscript>
+    <!-- /VK Pixel counter -->
+    <!-- VK Pixel goals -->
+    <script>
+    (function() {
+      var rules = [
+      ["apps.apple.com", "click_appstore"],
+      ["rustore.ru", "click_rustore"],
+      ["play.google.com", "click_googleplay"]
+      ];
+      document.addEventListener('click', function(e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || !window._tmr) return;
+        var href = a.getAttribute('href') || '';
+        for (var i = 0; i < rules.length; i++) {
+          if (href.indexOf(rules[i][0]) !== -1) {
+            window._tmr.push({ type: "reachGoal", id: "3767087", goal: rules[i][1] });
+            break;
+          }
+        }
+      }, true);
+    })();
+    </script>
+    <!-- /VK Pixel goals -->
+
 </head>
 <body>
 
