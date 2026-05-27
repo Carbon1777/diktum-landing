@@ -190,9 +190,15 @@
       var refValid = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/.test(ref);
       if (!refValid) ref = '';
 
-      // Полный URL с ref — то что копируется в clipboard. Приложение при
-      // первом запуске прочитает буфер, распарсит как URI, извлечёт ?ref=.
-      var fullUrl = window.location.href;
+      // Canonical URL — то что копируется в clipboard. НЕ используем
+      // window.location.href, чтобы не утянуть лишние query (utm_*,
+      // дубли ?ref=, fragment'ы). Атакующий мог бы скрафтить
+      // https://diktumweb.ru/r/?ref=GOOD&ref=BAD — на сервере и в клиенте
+      // queryParameters['ref'] берёт ПОСЛЕДНИЙ. Canonical URL отрезает
+      // эту атаку: всегда копируется ровно `?ref=<нормализованный_ref>`.
+      var fullUrl = refValid
+        ? 'https://diktumweb.ru/r/?ref=' + ref
+        : window.location.href;
 
       var ua = navigator.userAgent || '';
       var isIOS = /iPhone|iPad|iPod/i.test(ua) && !window.MSStream;
@@ -207,10 +213,14 @@
       var refBadge = document.getElementById('ref-badge');
       var copiedNotice = document.getElementById('copied');
 
-      // Показать реф-код в карточке
+      // Показать реф-код в карточке. Если кода нет / битый — скрываем
+      // bonus-блок (нет смысла обещать диктов другу без валидной атрибуции).
       if (ref) {
         refBadge.textContent = 'код: ' + ref;
         refBadge.classList.add('visible');
+      } else {
+        var bonusEl = document.getElementById('bonus');
+        if (bonusEl) bonusEl.style.display = 'none';
       }
 
       // Целевая ссылка для «Открыть в приложении»:
@@ -314,10 +324,11 @@
       });
 
       // Клик на «Открыть в приложении»:
-      // - На mobile: copy + попытка открыть deep link через 600ms задержку
-      //   (чтобы copy успел отработать, особенно legacy через textarea);
-      //   если через 1800ms документ всё ещё visible — приложение не
-      //   открылось, показываем стор-кнопки.
+      // - На mobile: copy + попытка открыть deep link; если через 1800ms
+      //   документ всё ещё visible — приложение не открылось, показываем
+      //   стор-кнопки. Если страница ушла в фон (app открылось) — сбрасываем
+      //   таймер через visibilitychange, иначе при возврате на вкладку
+      //   будет всплывать ненужный store-блок.
       // - На desktop: просто переход на app.diktumweb.ru.
       openAppBtn.addEventListener('click', function(e) {
         if (!isMobile) return; // desktop — нативный переход по href
@@ -325,11 +336,17 @@
         copyInviteToClipboard().then(function(ok) { if (ok) markCopied(); });
         var clickedAt = Date.now();
         window.location.href = appUrl;
-        setTimeout(function() {
+        var timer = setTimeout(function() {
           if (document.visibilityState === 'visible' && Date.now() - clickedAt < 2500) {
             showStores();
           }
         }, 1800);
+        document.addEventListener('visibilitychange', function onHide() {
+          if (document.hidden) {
+            clearTimeout(timer);
+            document.removeEventListener('visibilitychange', onHide);
+          }
+        });
       });
 
       // На mobile через 2.5 сек подсказать сторы — если deep link сразу
