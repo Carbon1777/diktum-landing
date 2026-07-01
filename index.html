@@ -853,11 +853,6 @@
         <a href="#how">Как это работает</a>
         <a href="#video">Видео</a>
         <a href="#download">Скачать</a>
-        <a href="https://app.diktumweb.ru" class="btn-login js-app-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          Войти
-          <span class="btn-login-hint">Веб-версия приложения</span>
-        </a>
       </nav>
       <button class="burger" id="burger" aria-label="Меню">
         <span></span><span></span><span></span>
@@ -871,7 +866,6 @@
     <a href="#how" onclick="closeMobile()">Как это работает</a>
     <a href="#video" onclick="closeMobile()">Видео</a>
     <a href="#download" onclick="closeMobile()">Скачать</a>
-    <a href="https://app.diktumweb.ru" class="btn-primary js-app-link" style="margin-top: 12px;">Войти в аккаунт</a>
   </nav>
 
   <!-- ── Hero ── -->
@@ -1182,20 +1176,6 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    // Реферальная программа: проброс сохранённого ?ref= в ссылки на app.diktumweb.ru.
-    (function() {
-      var ref = null;
-      try { ref = localStorage.getItem('diktum_ref'); } catch (_) {}
-      if (!ref) return;
-      document.querySelectorAll('a.js-app-link').forEach(function(a) {
-        try {
-          var url = new URL(a.href);
-          url.searchParams.set('ref', ref);
-          a.href = url.toString();
-        } catch (_) { /* malformed href — игнор */ }
-      });
-    })();
   </script>
 </body>
 </html>
