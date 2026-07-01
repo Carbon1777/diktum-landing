@@ -234,7 +234,8 @@
       } else if (isAndroid) {
         appUrl = 'https://diktumweb.ru/?ref=' + encodeURIComponent(ref);
       } else {
-        appUrl = 'https://app.diktumweb.ru/?ref=' + encodeURIComponent(ref);
+        // Веб-версия закрыта — на десктопе ведём на лендинг (там кнопки сторов).
+        appUrl = 'https://diktumweb.ru/#download';
       }
       openAppBtn.href = appUrl;
 
