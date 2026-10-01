@@ -93,7 +93,6 @@
     }
     .doc-content { display: none; }
     .doc-content.active { display: block; }
-    .doc-content .revision { font-size: 13px; color: var(--text-muted); opacity: 0.8; margin: 0 0 16px; }
 
     /* Markdown styling */
     .doc-content h1 { font-size: 28px; font-weight: 800; margin: 0 0 20px; }
@@ -220,12 +219,9 @@
       return map;
     }
 
-    function render(key, md, revisionDate) {
-      let html = DOMPurify.sanitize(marked.parse(md));
-      if (revisionDate) {
-        const [y, m, d] = revisionDate.split('-');
-        html = '<p class="revision">Редакция от ' + d + '.' + m + '.' + y + '</p>' + html;
-      }
+    // Дата редакции — внутри самого текста документа; отдельной строкой не дублируем.
+    function render(key, md) {
+      const html = DOMPurify.sanitize(marked.parse(md));
       document.getElementById('doc-' + key).innerHTML = html;
     }
 
@@ -234,13 +230,13 @@
       try {
         const doc = (await fetchServerDocs())[SLUG[key]];
         if (!doc) throw new Error('нет документа ' + key);
-        render(key, doc.body_md, doc.revision_date);
+        render(key, doc.body_md);
         loaded[key] = true;
       } catch (e) {
         try {
           const res = await fetch(FALLBACK[key]);
           if (!res.ok) throw new Error('HTTP ' + res.status);
-          render(key, await res.text(), null);
+          render(key, await res.text());
           loaded[key] = true;
         } catch (e2) {
           document.getElementById('doc-' + key).innerHTML = '<p>Не удалось загрузить документ.</p>';
